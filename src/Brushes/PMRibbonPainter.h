@@ -14,10 +14,12 @@ public:
 
     PMRibbonPainter(ofColor color, float dx, float dy, float ax, float ay, float div, float ease);
 
+    void setup();
     void draw();
 
     void setPosition(int x, int y);
     void setColor(ofColor color);
+    void clear();
 
 private:
 
@@ -27,8 +29,9 @@ private:
     float ease;
 
     ofPath path;
-
     ofColor color;
+
+    bool isFirstPositioning;
 };
 
 #endif //HARMONYFOROF_PMRIBBONPAINTER_H

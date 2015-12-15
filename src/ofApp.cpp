@@ -2,9 +2,11 @@
 
 void ofApp::setup()
 {
-    ribbon = PMBrushRibbon();
-
     ofEnableSmoothing();
+    ofBackground(255);
+
+    ribbon = PMBrushRibbon();
+    ribbon.setup();
 }
 
 void ofApp::update()

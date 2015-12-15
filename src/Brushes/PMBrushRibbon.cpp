@@ -27,7 +27,12 @@ PMBrushRibbon::PMBrushRibbon()
     }
     fbo.end();
 
-    ofBackground(255);
+}
+
+void PMBrushRibbon::setup()
+{
+    for (int i=0; i<NUM_PAINTERS; ++i)
+        painters[i].setup();
 }
 
 void PMBrushRibbon::update()
@@ -42,9 +47,7 @@ void PMBrushRibbon::draw()
         fbo.begin();
         {
             for (int i=0; i<NUM_PAINTERS; ++i)
-            {
                 painters[i].draw();
-            }
         }
         fbo.end();
     }
@@ -55,17 +58,13 @@ void PMBrushRibbon::draw()
 void PMBrushRibbon::setPosition(int x, int y)
 {
     for (int i=0; i<NUM_PAINTERS; ++i)
-    {
         painters[i].setPosition(x, y);
-    }
 }
 
 void PMBrushRibbon::setColor(ofColor color)
 {
     for (int i=0; i<NUM_PAINTERS; ++i)
-    {
         painters[i].setColor(color);
-    }
 }
 
 void PMBrushRibbon::setSize(unsigned int _size)
@@ -81,4 +80,6 @@ void PMBrushRibbon::strokeStarted()
 void PMBrushRibbon::strokeEnded()
 {
     isInStroke = false;
+    for (int i=0; i<NUM_PAINTERS; ++i)
+        painters[i].clear();
 }

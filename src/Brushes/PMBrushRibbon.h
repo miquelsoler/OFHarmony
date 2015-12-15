@@ -14,6 +14,7 @@ public:
 
     PMBrushRibbon();
 
+    void setup();
     void update();
     void draw();
 

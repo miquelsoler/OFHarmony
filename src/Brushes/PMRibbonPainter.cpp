@@ -18,11 +18,19 @@ PMRibbonPainter::PMRibbonPainter(ofColor _color, float _dx, float _dy, float _ax
     path.setFilled(false);
     path.setStrokeWidth(1);
     path.setCurveResolution(500);
-    path.setCircleResolution(500);
+
+    isFirstPositioning = true;
+}
+
+void PMRibbonPainter::setup()
+{
+    isFirstPositioning = true;
 }
 
 void PMRibbonPainter::draw()
 {
+    if (isFirstPositioning) return;
+
     ofEnableBlendMode(OF_BLENDMODE_ADD);
     path.draw();
     ofDisableBlendMode();
@@ -30,15 +38,21 @@ void PMRibbonPainter::draw()
 
 void PMRibbonPainter::setPosition(int x, int y)
 {
+    if (isFirstPositioning)
+    {
+        dx = x;
+        dy = y;
+        isFirstPositioning = false;
+        return;
+    }
+
     path.moveTo(dx, dy);
 
     dx -= ax = (ax + (dx - x) * div) * ease;
     dy -= ay = (ay + (dy - y) * div) * ease;
 
-    ofColor currentColor = ofColor(127, color.g, color.b, 127);
+    ofColor currentColor = ofColor(color.r, color.g, color.b, 127);
     path.setStrokeColor(currentColor);
-
-//    this.context.strokeStyle = "rgba(" + COLOR[0] + ", " + COLOR[1] + ", " + COLOR[2] + ", " + 0.05 * BRUSH_PRESSURE + ")";
 
     path.lineTo(dx, dy);
 }
@@ -47,4 +61,19 @@ void PMRibbonPainter::setColor(ofColor _color)
 {
     color = _color;
     path.setStrokeColor(color);
+}
+
+void PMRibbonPainter::clear()
+{
+    path.clear();
+
+    path = ofPath();
+
+    path.setMode(ofPath::POLYLINES);
+    path.setStrokeColor(color);
+    path.setFilled(false);
+    path.setStrokeWidth(1);
+    path.setCurveResolution(500);
+
+    isFirstPositioning = true;
 }
