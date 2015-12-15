@@ -7,7 +7,7 @@
 const unsigned int NUM_PAINTERS = 50;
 const unsigned int DEFAULT_SIZE = 1;
 
-const ofColor DEFAULT_COLOR = ofColor::black;
+const ofColor DEFAULT_COLOR = ofColor(1, 1, 1, 255);
 
 PMBrushRibbon::PMBrushRibbon()
 {
@@ -37,7 +37,8 @@ void PMBrushRibbon::setup()
 
 void PMBrushRibbon::update()
 {
-    if (!isInStroke) return;
+    for (int i=0; i<NUM_PAINTERS; ++i)
+        painters[i].update();
 }
 
 void PMBrushRibbon::draw()

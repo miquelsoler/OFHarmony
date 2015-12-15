@@ -6,8 +6,10 @@
 
 PMRibbonPainter::PMRibbonPainter(ofColor _color, float _dx, float _dy, float _ax, float _ay, float _div, float _ease)
 {
-    color = ofColor::black;
+    color = ofColor(_color.r, _color.g, _color.b, _color.a);
 
+    // FIXME: Why adding a color that is not black (color = ofColor(1,1,1,255)) tends to set alpha to zero???
+    color = ofColor(0,0,0);
     dx = _dx; dy = _dy;
     ax = _ax; ay = _ay;
     div = _div;
@@ -17,19 +19,32 @@ PMRibbonPainter::PMRibbonPainter(ofColor _color, float _dx, float _dy, float _ax
     path.setStrokeColor(color);
     path.setFilled(false);
     path.setStrokeWidth(1);
-    path.setCurveResolution(500);
 
-    isFirstPositioning = true;
+    isNewPath = true;
 }
 
 void PMRibbonPainter::setup()
 {
-    isFirstPositioning = true;
+    isNewPath = true;
+}
+
+void PMRibbonPainter::update()
+{
+    if ((dx != targetPos.x) && (dy != targetPos.y))
+    {
+        path.moveTo(dx, dy);
+        if (isNewPath) return;
+
+        dx -= ax = (ax + (dx - targetPos.x) * div) * ease;
+        dy -= ay = (ay + (dy - targetPos.y) * div) * ease;
+
+        path.lineTo(dx, dy);
+    }
 }
 
 void PMRibbonPainter::draw()
 {
-    if (isFirstPositioning) return;
+    if (isNewPath) return;
 
     ofEnableBlendMode(OF_BLENDMODE_ADD);
     path.draw();
@@ -38,28 +53,20 @@ void PMRibbonPainter::draw()
 
 void PMRibbonPainter::setPosition(int x, int y)
 {
-    if (isFirstPositioning)
+    targetPos = ofPoint(x, y);
+
+    if (isNewPath)
     {
-        dx = x;
-        dy = y;
-        isFirstPositioning = false;
+        dx = targetPos.x;
+        dy = targetPos.y;
+        isNewPath = false;
         return;
     }
-
-    path.moveTo(dx, dy);
-
-    dx -= ax = (ax + (dx - x) * div) * ease;
-    dy -= ay = (ay + (dy - y) * div) * ease;
-
-    ofColor currentColor = ofColor(color.r, color.g, color.b, 127);
-    path.setStrokeColor(currentColor);
-
-    path.lineTo(dx, dy);
 }
 
 void PMRibbonPainter::setColor(ofColor _color)
 {
-    color = _color;
+    color = ofColor(_color.r, _color.g, _color.b, _color.a);
     path.setStrokeColor(color);
 }
 
@@ -73,7 +80,6 @@ void PMRibbonPainter::clear()
     path.setStrokeColor(color);
     path.setFilled(false);
     path.setStrokeWidth(1);
-    path.setCurveResolution(500);
 
-    isFirstPositioning = true;
+    isNewPath = true;
 }
